@@ -111,13 +111,43 @@ class GameManagementCommand < ManagementCommand
         game = Game.new(id: id, type: server.settings.game_type, style: server.settings.game_style)
         puts "Created game #{game.id} of type '#{game.type}' and style '#{game.style}'."
         server.games[id] = game
+      when 'halt'
+        id = args[1].to_i
+        game = server.games[id]
+        if game
+          puts "Halting game #{game.id}"
+          game.halt
+        else
+          puts "No game exists with #{id}"
+        end
+      when 'info'
+        id   = args[1].to_i
+        game = server.games[id]
+        if game
+          puts "GAME #{id}"
+          puts "type: #{game.type}  style: #{game.style}"
+          puts "status: #{game.status}"
+          puts
+          puts "DECK"
+          puts
+          puts "  #{game.deck}"
+          puts
+          puts "0 players"
+          puts
+        else
+          puts "No game exists with #{id}"
+        end
       when 'list'
         puts "GAMES"
         server.games.each do |num, game|
-          puts "#{game.id}: #{game.type}/#{game.style}: 0 players"
+          puts "#{game.id}: #{game.type}/#{game.style}: #{game.status}: #{game.players.size} players"
         end
-      when ''
-        puts "create/list"
+      when '', nil
+        puts "HELP game"
+        puts
+        puts "game create    Creates a new game matching the server's configured game type and style"
+        puts "game list      Lists the previous and current games"
+        puts
       else
         puts "Unknown command: game #{subcommand}"
     end

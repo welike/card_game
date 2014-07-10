@@ -1,3 +1,5 @@
+require_relative 'card'
+require_relative 'deck'
 require_relative 'game'
 require_relative 'management_commands'
 require_relative 'settings'
@@ -86,7 +88,7 @@ class CardGameServer
     while running
       print "> "
       input = gets.chomp
-      command, args = extract_command(input)
+      command, *args = extract_command(input)
       management_commands.handle_management_command(self, command, *args) if command
 
       running = false if %w[q quit].include?(command)
@@ -113,8 +115,7 @@ class CardGameServer
   end
 
   def extract_command(input)
-    arr = input.split(' ', 2)
-    arr
+    input.split(' ')
   end
 
   # config/data
