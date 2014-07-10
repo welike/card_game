@@ -31,6 +31,9 @@ class CardGameServer
     settings.bind_port    = 3434
     settings.game_type    = :poker
     settings.game_style   = :five_card_draw
+
+    load_config
+    load_data
   end
 
   def start_server
@@ -117,17 +120,27 @@ class CardGameServer
   # config/data
 
   def load_config
+    filename = 'config.yml'
     puts 'Loading config...'
+    self.settings = YAML.load_file(filename) if File.exists?(filename)
   end
 
   def save_config
     filename = 'config.yml'
     puts "Saving config... (#{filename})"
+    File.open(filename, 'w') { |f| f.write settings.to_yaml }
   end
 
   def load_data
+    filename = 'data.yml'
     puts 'Loading data...'
-    data = File
+
+    if File.exists?(filename)
+      data = YAML.load_file(filename)
+
+      self.total_connections = data[:total_connections]
+      self.total_games       = data[:total_games]
+    end
   end
 
   def save_data

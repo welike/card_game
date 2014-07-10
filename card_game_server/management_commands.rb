@@ -40,6 +40,7 @@ class ManagementCommands
     register(ClientManagementCommand)
     register(GameManagementCommand)
     register(HelpManagementCommand)
+    register(ShutdownManagementCommand)
     puts
   end
 end
@@ -142,7 +143,7 @@ class ShutdownManagementCommand < ManagementCommand
   COMMAND     = 'shutdown'
   DESCRIPTION = 'Shutdown the server'
 
-  def setup
+  def run
     puts 'Shutdown initiated...'
     server.save_config
     server.save_data
