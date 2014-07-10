@@ -8,9 +8,9 @@ class ManagementCommands
   end
 
   def handle_management_command(server, command, *args)
-    command_item = commands[command]
-    if command_item
-      command_item.new(server, args)
+    klass = commands[command]
+    if klass
+      klass.new(server, args)
     elsif command == ''
       # Enter was pressed without submitting a command
     else
@@ -19,9 +19,8 @@ class ManagementCommands
   end
 
   def register(klass)
-    command = klass.new
-    puts "register_command: added '#{command::COMMAND}' to class '#{command.class.name}'"
-    commands[command::COMMAND] = command
+    puts "register_command: added '#{klass::COMMAND}' to class '#{klass.name}'"
+    commands[klass::COMMAND] = klass
   end
 
   def register_management_commands
