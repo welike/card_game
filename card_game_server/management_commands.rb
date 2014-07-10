@@ -8,14 +8,25 @@ class ManagementCommands
   end
 
   def handle_management_command(server, command, *args)
-    klass = commands[command]
-    if klass
-      klass.new(server, args)
-    elsif command == ''
-      # Enter was pressed without submitting a command
+    nearest_command = identify_nearest_command(command)
+    if nearest_command.is_a?(Array) && nearest_command.size > 1
+      puts "There are several matching commands: #{nearest_command.join(', ')}"
     else
-      puts "Unknown command: #{command}"
+      klass = commands[nearest_command]
+      if klass
+        klass.new(server, args)
+      elsif command == ''
+        # Enter was pressed without submitting a command
+      else
+        puts "Unknown command: #{command}"
+      end
     end
+  end
+
+  private
+
+  def identify_nearest_command(command)
+    commands.keys.find { |e| /^#{command}/ =~ e }
   end
 
   def register(klass)
