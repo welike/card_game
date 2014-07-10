@@ -7,23 +7,16 @@ class ManagementCommands
     register_management_commands
   end
 
-  def register_command(command, klass, options = {})
-    puts "register_command: added '#{command}' to call method '#{method}'"
-    commands[command] = {
-      command: command,
-      klass: klass,
-      description: options[:description] || ''
-    }
+  def register(klass)
+    command = klass.new
+    puts "register_command: added '#{command.command}' to class '#{command.class.name}'"
+    commands[command.command] = command
   end
 
   def register_management_commands
     puts 'Registering management commands...'
-    register_command('broadcast', 'command_broadcast', description: 'Send a message to all connected clients')
-    register_command('game_create', 'command_game_create', description: 'Create a game')
-    register_command('game_list', 'command_game_list', description: 'List current and previous games')
-    register_command('clients', 'command_list_clients', description: 'List current and previous client connections')
-    register_command('help', HelpManagementCommand, description: 'Display command help')
-    register_command('shutdown', 'command_shutdown', description: 'Shutdown server immediately')
+    register(BroadcastManagementCommand)
+    register(HelpManagementCommand)
     puts
   end
 end
@@ -43,6 +36,18 @@ class ManagementCommand
 
   def run
     puts "#{self.class.name} needs to override the run method."
+  end
+end
+
+class BroadcastManagementCommand < ManagementCommand
+  def initialize(game_server, args)
+
+  end
+
+  def run
+    message = args[0]
+    puts "Broadcasting '#{message}' to all connected clients"
+    game_server.clients_send_content game_server.clients, "BROADCAST #{message}"
   end
 end
 
