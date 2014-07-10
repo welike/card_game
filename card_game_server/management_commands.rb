@@ -23,6 +23,7 @@ class ManagementCommands
   end
 end
 
+# Acts as an abstract class for all management commands
 class ManagementCommand
   attr_accessor :command, :description, :handler
 
