@@ -121,8 +121,8 @@ class HelpManagementCommand < ManagementCommand
     puts
     puts "Commands"
     puts '-'*80
-    server.management_commands.each do |key, command|
-      printf "%-15s %s\n", command[:command], command[:description]
+    server.management_commands.commands.each do |key, klass|
+      printf "%-15s %s\n", klass::COMMAND, klass::DESCRIPTION
     end
   end
 end

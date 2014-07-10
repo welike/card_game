@@ -5,7 +5,7 @@ require_relative 'settings'
 require 'yaml'
 
 class CardGameServer
-  attr_accessor :commands, :settings, :server
+  attr_accessor :management_commands, :settings, :server
   attr_accessor :clients, :games
   attr_accessor :session_connections, :session_games
   attr_accessor :total_connections, :total_games
@@ -25,19 +25,12 @@ class CardGameServer
     self.total_connections   = 0
     self.total_games         = 0
 
-    register_management_commands
-
     # Settings
     self.settings = Settings.new
     settings.bind_address = '127.0.0.1'
     settings.bind_port    = 3434
     settings.game_type    = :poker
     settings.game_style   = :five_card_draw
-  end
-
-  def register_management_commands
-    register_command('shutdown', 'command_shutdown', description: 'Shutdown server immediately')
-    puts
   end
 
   def start_server
