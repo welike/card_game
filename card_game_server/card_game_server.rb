@@ -117,14 +117,6 @@ class CardGameServer
     end
   end
 
-  def command_shutdown(args)
-    puts 'Shutdown initiated...'
-    save_config
-    save_data
-    puts 'Shutdown.'
-    exit
-  end
-
   def extract_command(input)
     arr = input.split(' ', 2)
     arr

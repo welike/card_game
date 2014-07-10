@@ -128,3 +128,18 @@ class HelpManagementCommand < ManagementCommand
     end
   end
 end
+
+class ShutdownManagementCommand < ManagementCommand
+  def setup(game_server, args)
+    self.command = 'shutdown'
+    self.description = 'Shutdown the server'
+  end
+
+  def setup
+    puts 'Shutdown initiated...'
+    game_server.save_config
+    game_server.save_data
+    puts 'Shutdown.'
+    exit
+  end
+end
