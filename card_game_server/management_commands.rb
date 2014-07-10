@@ -16,6 +16,8 @@ class ManagementCommands
   def register_management_commands
     puts 'Registering management commands...'
     register(BroadcastManagementCommand)
+    register(ClientManagementCommand)
+    register(GameManagementCommand)
     register(HelpManagementCommand)
     puts
   end
