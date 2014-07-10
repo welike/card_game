@@ -9,8 +9,8 @@ class ManagementCommands
 
   def register(klass)
     command = klass.new
-    puts "register_command: added '#{command.command}' to class '#{command.class.name}'"
-    commands[command.command] = command
+    puts "register_command: added '#{command::COMMAND}' to class '#{command.class.name}'"
+    commands[command::COMMAND] = command
   end
 
   def register_management_commands
@@ -25,20 +25,14 @@ end
 
 # Acts as an abstract class for all management commands
 class ManagementCommand
-  attr_accessor :command, :description, :handler
+  COMMAND     = 'abstract'
+  DESCRIPTION = 'An unimplemented management command'
 
-  def initialize(game_server, args)
-    self.command     = 'abstract'
-    self.description = 'An unimplemented mnanagement command'
-    self.args        = args
+  attr_accessor :server, :args
 
-    setup(game_server, args)
-  end
-
-  def setup(game_server, args)
-    if command == 'abstract'
-      puts "#{self.class.name} needs to set command and a description in an overriden setup method."
-    end
+  def initialize(server, args)
+    self.server = server
+    self.args   = args
   end
 
   def run
@@ -47,31 +41,27 @@ class ManagementCommand
 end
 
 class BroadcastManagementCommand < ManagementCommand
-  def setup(game_server, args)
-    self.command = 'broadcast'
-    self.description = 'Broadcast a message to all connected clients'
-  end
+  COMMAND     = 'broadcast'
+  DESCRIPTION = 'Broadcast a message to all connected clients'
 
   def run
     message = args[0]
     puts "Broadcasting '#{message}' to all connected clients"
-    game_server.clients_send_content game_server.clients, "BROADCAST #{message}"
+    server.clients_send_content server.clients, "BROADCAST #{message}"
   end
 end
 
 class ClientManagementCommand < ManagementCommand
-  def setup(game_server, args)
-    self.command = 'client'
-    self.description = 'Client related management commands'
-  end
+  COMMAND     = 'client'
+  DESCRIPTION = 'Client related management commands'
 
   def run
     subcommand = args[0]
     case subcommand
       when 'list'
         puts "client connections"
-        if game_server.clients.size > 0
-          game_server.clients.each do |num, client|
+        if server.clients.size > 0
+          server.clients.each do |num, client|
             puts "#{num}: #{client.peeraddr(true)}"
           end
         else
@@ -84,24 +74,22 @@ class ClientManagementCommand < ManagementCommand
 end
 
 class GameManagementCommand < ManagementCommand
-  def setup(game_server, args)
-    self.command = 'game'
-    self.description = 'Game related management commands'
-  end
+  COMMAND     = 'game'
+  DESCRIPTION = 'Game related management commands'
 
   def run
     subcommand = args[0]
     case subcommand
       when 'create'
-        id = game_server.total_games += 1
-        game_server.session_games += 1
+        id = server.total_games += 1
+        server.session_games += 1
 
-        game = Game.new(id: id, type: game_server.settings.game_type, style: game_server.settings.game_style)
+        game = Game.new(id: id, type: server.settings.game_type, style: server.settings.game_style)
         puts "Created game #{game.id} of type '#{game.type}' and style '#{game.style}'."
-        game_server.games[id] = game
+        server.games[id] = game
       when 'list'
         puts "GAMES"
-        game_server.games.each do |num, game|
+        server.games.each do |num, game|
           puts "#{game.id}: #{game.type}/#{game.style}: 0 players"
         end
       when ''
@@ -113,32 +101,28 @@ class GameManagementCommand < ManagementCommand
 end
 
 class HelpManagementCommand < ManagementCommand
-  def setup(game_server, args)
-    self.command     = 'help'
-    self.description = 'Display command help'
-  end
+  COMMAND     = 'help'
+  DESCRIPTION = 'Display command help'
 
   def run
     puts "HELP"
     puts
     puts "Commands"
     puts '-'*80
-    game_server.management_commands.each do |key, command|
+    server.management_commands.each do |key, command|
       printf "%-15s %s\n", command[:command], command[:description]
     end
   end
 end
 
 class ShutdownManagementCommand < ManagementCommand
-  def setup(game_server, args)
-    self.command = 'shutdown'
-    self.description = 'Shutdown the server'
-  end
+  COMMAND     = 'shutdown'
+  DESCRIPTION = 'Shutdown the server'
 
   def setup
     puts 'Shutdown initiated...'
-    game_server.save_config
-    game_server.save_data
+    server.save_config
+    server.save_data
     puts 'Shutdown.'
     exit
   end
