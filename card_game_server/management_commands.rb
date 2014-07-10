@@ -56,6 +56,30 @@ class BroadcastManagementCommand < ManagementCommand
   end
 end
 
+class ClientManagementCommand < ManagementCommand
+  def setup(game_server, args)
+    self.command = 'client'
+    self.description = 'Client related management commands'
+  end
+
+  def run
+    subcommand = args[0]
+    case subcommand
+      when 'list'
+        puts "client connections"
+        if game_server.clients.size > 0
+          game_server.clients.each do |num, client|
+            puts "#{num}: #{client.peeraddr(true)}"
+          end
+        else
+          puts "none."
+        end
+      else
+        puts "Unknown command: client #{subcommand}"
+    end
+  end
+end
+
 class GameManagementCommand < ManagementCommand
   def setup(game_server, args)
     self.command = 'game'

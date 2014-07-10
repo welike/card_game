@@ -117,33 +117,6 @@ class CardGameServer
     end
   end
 
-  def command_broadcast(args)
-    message = args[0]
-    puts "Broadcasting '#{message}' to all connected clients"
-    clients_send_content clients, "BROADCAST #{message}"
-  end
-
-  def command_help(args)
-    puts "HELP"
-    puts
-    puts "Commands"
-    puts '-'*80
-    commands.each do |key, command|
-      printf "%-15s %s\n", command[:command], command[:description]
-    end
-  end
-
-  def command_list_clients(args)
-    puts "client connections"
-    if clients.size > 0
-      clients.each do |num, client|
-        puts "#{num}: #{client.peeraddr(true)}"
-      end
-    else
-      puts "none."
-    end
-  end
-
   def command_shutdown(args)
     puts 'Shutdown initiated...'
     save_config
