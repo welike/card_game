@@ -125,22 +125,36 @@ class GameManagementCommand < ManagementCommand
         game = server.games[id]
         if game
           puts "GAME #{id}"
-          puts "type: #{game.type}  style: #{game.style}"
-          puts "status: #{game.status}"
+          puts
+          puts "  Type: #{game.type}"
+          puts "  Style: #{game.style}"
+          puts "  Status: #{game.status}"
           puts
           puts "DECK"
           puts
           puts "  #{game.deck}"
           puts
-          puts "0 players"
+          puts "PLAYERS"
+          puts
+          if game.players.size > 0
+            game.players.each do |player|
+              puts "  #{player}"
+            end
+          else
+            puts "  None."
+          end
           puts
         else
           puts "No game exists with #{id}"
         end
       when 'list'
         puts "GAMES"
-        server.games.each do |num, game|
-          puts "#{game.id}: #{game.type}/#{game.style}: #{game.status}: #{game.players.size} players"
+        if server.games.size > 0
+          server.games.each do |num, game|
+            puts "#{game.id}: #{game.type}/#{game.style}: #{game.status}: #{game.players.size} players"
+          end
+        else
+          puts "None."
         end
       when '', nil
         puts "HELP game"

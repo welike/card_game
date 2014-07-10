@@ -4,6 +4,7 @@ require_relative 'game'
 require_relative 'management_commands'
 require_relative 'settings'
 
+require 'json'
 require 'yaml'
 
 class CardGameServer
