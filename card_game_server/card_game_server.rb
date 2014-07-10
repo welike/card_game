@@ -18,7 +18,7 @@ class CardGameServer
   def setup
     # Initializations
     self.clients  = {}
-    self.commands = {}
+    self.management_commands = ManagementCommands.new
     self.games    = {}
     self.session_connections = 0
     self.session_games       = 0
@@ -36,12 +36,6 @@ class CardGameServer
   end
 
   def register_management_commands
-    puts 'Registering management commands...'
-    register_command('broadcast', 'command_broadcast', description: 'Send a message to all connected clients')
-    register_command('game_create', 'command_game_create', description: 'Create a game')
-    register_command('game_list', 'command_game_list', description: 'List current and previous games')
-    register_command('clients', 'command_list_clients', description: 'List current and previous client connections')
-    register_command('help', 'command_help', description: 'Display command help')
     register_command('shutdown', 'command_shutdown', description: 'Shutdown server immediately')
     puts
   end
@@ -96,7 +90,7 @@ class CardGameServer
       print "> "
       input = gets.chomp
       command, args = extract_command(input)
-      handle_management_command(command, *args) if command
+      management_commands.handle_management_command(self, command, *args) if command
 
       running = false if %w[q quit].include?(command)
     end
@@ -120,17 +114,6 @@ class CardGameServer
   def extract_command(input)
     arr = input.split(' ', 2)
     arr
-  end
-
-  def handle_management_command(command, *args)
-    command_item = commands[command]
-    if command_item
-      self.send(command_item[:method], args) if self.respond_to? command_item[:method]
-    elsif command == ''
-      # Enter was pressed without submitting a command
-    else
-      puts "Unknown command: #{command}"
-    end
   end
 
   def load_config

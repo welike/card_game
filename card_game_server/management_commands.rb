@@ -7,6 +7,17 @@ class ManagementCommands
     register_management_commands
   end
 
+  def handle_management_command(server, command, *args)
+    command_item = commands[command]
+    if command_item
+      command_item.new(server, args)
+    elsif command == ''
+      # Enter was pressed without submitting a command
+    else
+      puts "Unknown command: #{command}"
+    end
+  end
+
   def register(klass)
     command = klass.new
     puts "register_command: added '#{command::COMMAND}' to class '#{command.class.name}'"
@@ -33,6 +44,8 @@ class ManagementCommand
   def initialize(server, args)
     self.server = server
     self.args   = args
+
+    run
   end
 
   def run
