@@ -1,4 +1,3 @@
-
 require_relative 'game'
 require_relative 'management_commands'
 require_relative 'settings'

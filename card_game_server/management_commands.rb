@@ -56,6 +56,24 @@ class BroadcastManagementCommand < ManagementCommand
   end
 end
 
+class GameManagementCommand < ManagementCommand
+  def setup(game_server, args)
+    self.command = 'game'
+    self.description = 'Game related management commands'
+  end
+
+  def run
+    subcommand = args[0]
+    case subcommand
+      when 'create'
+      when 'list'
+      when ''
+      else
+        puts "Unknown command: game #{subcommand}"
+    end
+  end
+end
+
 class HelpManagementCommand < ManagementCommand
   def setup(game_server, args)
     self.command     = 'help'
