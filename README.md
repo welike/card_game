@@ -14,6 +14,9 @@ Components
 ----------
 
 Card Game Server
+
 Card Game Web Client
+
 Card Game iOS Client
+
 Card Game Android Client
