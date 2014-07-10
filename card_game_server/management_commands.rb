@@ -29,8 +29,12 @@ class ManagementCommand
     self.description = 'An unimplemented mnanagement command'
     self.args        = args
 
+    setup(game_server, args)
+  end
+
+  def setup(game_server, args)
     if command == 'abstract'
-      puts "#{self.class.name} needs to set command and a description."
+      puts "#{self.class.name} needs to set command and a description in an overriden setup method."
     end
   end
 
@@ -40,8 +44,9 @@ class ManagementCommand
 end
 
 class BroadcastManagementCommand < ManagementCommand
-  def initialize(game_server, args)
-
+  def setup(game_server, args)
+    self.command = 'broadcast'
+    self.description = 'Broadcast a message to all connected clients'
   end
 
   def run
@@ -52,8 +57,7 @@ class BroadcastManagementCommand < ManagementCommand
 end
 
 class HelpManagementCommand < ManagementCommand
-  def initialize(game_server, args)
-    super
+  def setup(game_server, args)
     self.command     = 'help'
     self.description = 'Display command help'
   end
