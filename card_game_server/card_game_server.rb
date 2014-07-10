@@ -40,7 +40,6 @@ class CardGameServer
   end
 
   def main
-    # Main
     puts "Starting pokerd (bind address: #{settings.bind_address}, bind port: #{settings.bind_port}, game type: #{settings.game_type}, game style: #{settings.game_style})"
 
     start_server
@@ -63,6 +62,8 @@ class CardGameServer
     end
   end
 
+  # loop handling
+
   def game_loop(client)
     connected = true
     while connected
@@ -71,7 +72,7 @@ class CardGameServer
       puts "client sent '#{received}'"
 
       if %w[q quit].include?(received)
-        puts "client elected to quit"
+        puts "client asked to quit"
         connected = false
       end
     end
@@ -90,6 +91,8 @@ class CardGameServer
     command_shutdown
   end
 
+  # client
+
   def client_receive_content(client)
     client.gets.chomp
   end
@@ -97,6 +100,8 @@ class CardGameServer
   def client_send_content(client, content = "")
     client.puts content
   end
+
+  # all clients
 
   def clients_send_content(clients, content = "")
     clients.each do |num, client|
@@ -108,6 +113,8 @@ class CardGameServer
     arr = input.split(' ', 2)
     arr
   end
+
+  # config/data
 
   def load_config
     puts 'Loading config...'
