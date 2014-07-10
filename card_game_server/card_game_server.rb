@@ -123,25 +123,6 @@ class CardGameServer
     clients_send_content clients, "BROADCAST #{message}"
   end
 
-  def command_game_create(args)
-    id = self.total_games += 1
-    self.session_games += 1
-
-    game = Game.new(id: id, type: settings.game_type, style: settings.game_style)
-    puts "Created game #{game.id} of type '#{game.type}' and style '#{game.style}'."
-    self.games[id] = game
-  end
-
-  def command_game_list(args)
-    puts "GAMES"
-    games.each do |num, game|
-      puts "#{game.id}: #{game.type}/#{game.style}: 0 players"
-    end
-  end
-
-  def command_game_start(args)
-  end
-
   def command_help(args)
     puts "HELP"
     puts

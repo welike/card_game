@@ -66,8 +66,19 @@ class GameManagementCommand < ManagementCommand
     subcommand = args[0]
     case subcommand
       when 'create'
+        id = game_server.total_games += 1
+        game_server.session_games += 1
+
+        game = Game.new(id: id, type: game_server.settings.game_type, style: game_server.settings.game_style)
+        puts "Created game #{game.id} of type '#{game.type}' and style '#{game.style}'."
+        game_server.games[id] = game
       when 'list'
+        puts "GAMES"
+        game_server.games.each do |num, game|
+          puts "#{game.id}: #{game.type}/#{game.style}: 0 players"
+        end
       when ''
+        puts "create/list"
       else
         puts "Unknown command: game #{subcommand}"
     end
